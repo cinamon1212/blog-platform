@@ -1,29 +1,35 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { Pagination } from 'antd';
+import { Spin } from 'antd';
 
-import { fetchArticles } from '../../store/articleSlice';
+import { useActions } from '../../hooks/useAction';
+// import { fetchArticles } from '../../store/slices/articleSlice';
 import { ItemList } from '../ItemList/ItemList';
+import { Pagination } from '../Pagination/Pagination';
 
 import classes from './List.module.scss';
 
+const Loader = () => (
+  <div className={classes.spin}>
+    <Spin size="large" />
+  </div>
+);
+
 export function List() {
-  const articles = useSelector((state) => state.articles.articles);
-  const page = useSelector((state) => state.articles.page);
-  const dispatch = useDispatch();
-  // console.log(articles);
+  const loading = useSelector((state) => state.articleReducer.loading);
+  const articles = useSelector((state) => state.articleReducer.articles);
+  const page = useSelector((state) => state.articleReducer.page);
+  // const dispatch = useDispatch();
 
-  const total = useSelector((state) => state.articles.articlesCount);
-
-  const onChange = (e) => {
-    dispatch(fetchArticles(e));
-  };
+  const { fetchArticles } = useActions();
 
   useEffect(() => {
-    dispatch(fetchArticles(page));
+    fetchArticles(page);
   }, []);
 
-  return (
+  const content = loading ? (
+    <Loader />
+  ) : (
     <>
       <ul className={classes.list}>
         {articles.map((article) => (
@@ -39,17 +45,9 @@ export function List() {
           />
         ))}
       </ul>
-      <Pagination
-        defaultCurrent={1}
-        total={total}
-        current={page}
-        defaultPageSize={5}
-        hideOnSinglePage
-        showSizeChanger={false}
-        // centered
-        onChange={onChange}
-        style={{ display: 'inline-block', marginTop: '30px' }}
-      />
+      <Pagination />
     </>
   );
+
+  return content;
 }

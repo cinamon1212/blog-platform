@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Link, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
-// import Markdown from 'markdown-to-jsx';
 
-import { fetchArticleBySlug } from '../../store/articleSlice';
+import { useActions } from '../../hooks/useAction';
+// import { fetchArticleBySlug } from '../../store/slices/articleSlice';
 
 import classes from './ItemList.module.scss';
 
@@ -32,9 +32,11 @@ const getElementProps = (
 };
 
 export function ItemList(props) {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const item = useSelector((state) => state.articles.openedItem);
+  const { fetchArticleBySlug } = useActions();
+
+  const item = useSelector((state) => state.articleReducer.openedItem);
 
   const { createdAt, slug, title, favoritesCount, tagList, description, author, month, day, year, body } = Object.keys(
     props,
@@ -45,10 +47,8 @@ export function ItemList(props) {
   const { id } = useParams();
 
   useEffect(() => {
-    if (id) dispatch(fetchArticleBySlug(id));
+    if (id) fetchArticleBySlug(id);
   }, [id]);
-
-  if (body) console.log(body);
 
   return (
     <li className={classes.list__item}>
@@ -75,10 +75,7 @@ export function ItemList(props) {
         </div>
         <p className={classes['list__item-text']}>{description}</p>
 
-        {/* <Markdown options={{ forceInline: false }}>{body ? body : ''}</Markdown> */}
-        <ReactMarkdown>{body ? body : ''}</ReactMarkdown>
-
-        {/* {body ? <div className={classes['list__item-text']}>{body}</div> : null} */}
+        <ReactMarkdown className={classes['list__item-body']}>{body ? body : ''}</ReactMarkdown>
       </div>
       <div className={classes['list__item-preview']}>
         <div className={classes['list__item-person']}>

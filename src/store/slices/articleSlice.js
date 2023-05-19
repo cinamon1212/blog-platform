@@ -24,6 +24,7 @@ const articleSlice = createSlice({
     openedItem: {},
     articlesCount: 0,
     page: 1,
+    loading: false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -31,14 +32,25 @@ const articleSlice = createSlice({
       state.articles = [...action.payload.articles];
       state.articlesCount = action.payload.articlesCount;
       state.page = action.meta.arg;
+      state.loading = false;
+    });
+
+    builder.addCase(fetchArticles.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(fetchArticles.rejected, (action) => {
+      console.log(`FetchArticles - rejected action: ${action}`);
     });
 
     builder.addCase(fetchArticleBySlug.fulfilled, (state, action) => {
       state.openedItem = { ...action.payload.article };
     });
+
+    builder.addCase(fetchArticleBySlug.rejected, (action) => {
+      console.log(`FetchArticleBySlug - rejected action: ${action}`);
+    });
   },
 });
 
-export const { addArticles } = articleSlice.actions;
-
-export default articleSlice.reducer;
+export const { actions, reducer } = articleSlice;

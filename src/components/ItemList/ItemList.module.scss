@@ -66,6 +66,12 @@
     color: rgba(0, 0, 0, 0.75);
   }
 
+  &__item-body {
+    font-size: 20px;
+    line-height: 28px;
+    color: rgba(0, 0, 0, 0.75);
+  }
+
   &__item-tags {
     display: flex;
     gap: 5px;

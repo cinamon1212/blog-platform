@@ -1,6 +1,6 @@
-.authorization {
-  width: 384px;
-  height: 599px;
+.edit-profile {
+  width: 380px;
+  max-height: 570px;
   background: white;
   margin: 0 auto;
   border: 1px solid #d9d9d9;
@@ -9,6 +9,20 @@
     0px 1.46302px 7.04911px rgba(0, 0, 0, 0.0282725), 0px 0.608796px 2.93329px rgba(0, 0, 0, 0.0196802);
   border-radius: 6px;
   padding: 32px 48px;
+
+  &__agreed {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+    margin-left: 12px;
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
 
   &__title {
     font-weight: 500;
@@ -21,15 +35,17 @@
     margin-bottom: 21px;
   }
 
-  &__list {
-    list-style: none;
-    margin: 0;
-    margin-bottom: 20px;
-    padding: 0;
+  &__item {
+    margin-top: 10px;
   }
 
-  &__item {
-    margin-bottom: 12px;
+  &__error-elem {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 22px;
+    color: #f5222d;
+    height: 15px;
+    margin-top: 2px;
   }
 
   &__head {
@@ -51,11 +67,46 @@
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    color: #d9d9d9;
+    color: rgba(0, 0, 0, 0.75);
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__input-submit {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border-radius: 4px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
   }
 
   &__divider {
     height: 0;
     border: 1px solid #e8e8e8;
+    margin-bottom: 10px;
   }
+
+  &__sign-in {
+    margin-top: 10px;
+    color: #8c8c8c;
+    text-align: center;
+  }
+
+  &__Link {
+    color: #1890ff;
+  }
+}
+
+input::placeholder {
+  color: #d9d9d9;
 }
