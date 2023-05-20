@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 // import { Navigation } from '../Navigation/Navigation';
 
 import { List } from '../List/List';
@@ -19,6 +19,7 @@ export function App() {
         <Route path={'sign-up'} element={<SignUp />}></Route>
         <Route path={'sign-in'} element={<SignIn />} />
         <Route path={'profile'} element={<EditProfile />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );

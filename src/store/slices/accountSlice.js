@@ -23,6 +23,7 @@ const accountSlice = createSlice({
     });
 
     builder.addCase(fetchRegister.rejected, (state, action) => {
+      console.log(action);
       state.errors = { ...action.error };
     });
 
@@ -45,7 +46,11 @@ const accountSlice = createSlice({
     });
 
     builder.addCase(fetchEditProfile.fulfilled, (state, action) => {
-      state.personData = { ...action.payload.user };
+      state.personData = { ...action.payload };
+    });
+
+    builder.addCase(fetchEditProfile.rejected, (state, action) => {
+      state.errors = { ...action.error };
     });
   },
 });

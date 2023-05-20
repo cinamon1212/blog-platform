@@ -20,7 +20,7 @@ export function Navigation() {
 
   useEffect(() => {
     if (token) fetchGetLoginPerson(token);
-  }, []);
+  }, [token]);
 
   const authorizationList = (
     <>
@@ -28,6 +28,12 @@ export function Navigation() {
         Create article
       </Link>
       <Link to={'profile'}>{newPerson?.user?.username}</Link>
+      {newPerson?.user?.image ? (
+        <Link to={'profile'}>
+          {' '}
+          <img src={newPerson?.user?.image} alt="profile" className={classes['nav__img-profile']} />
+        </Link>
+      ) : null}
 
       <Link to={'sign-in'} className={classes.nav__item} onClick={onLogOutClick}>
         Log Out

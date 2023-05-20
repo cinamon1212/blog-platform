@@ -4,7 +4,7 @@ import { NavLink, Navigate } from 'react-router-dom';
 import { useRef } from 'react';
 
 import { useActions } from '../../hooks/useAction';
-// import { fetchRegister } from '../../store/slices/accountSlice';
+import { itemCreator, usernameRegister, emailRegister, passwordRegister } from '../../helpers/createInputsItem';
 
 import classes from './SignUp.module.scss';
 
@@ -47,55 +47,27 @@ export function SignUp() {
         <h1 className={classes['sign-up__title']}>Create new account</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={classes['sign-up__list']}>
-            <div className={classes['sign-up__item']}>
-              <h4 className={classes['sign-up__head']}>Username</h4>
-              <input
-                type="text"
-                {...register('username', {
-                  required: 'Username is required',
-                  minLength: { value: 3, message: 'Your name needs to be at least 3 characters.' },
-                  maxLength: { value: 20, message: 'Your name must not be longer than 20 characters' },
-                  pattern: {
-                    value: /^[a-z0-9]*$/,
-                    message: 'You can only use lowercase English letters and numbers',
-                  },
-                })}
-                placeholder="Username"
-                className={classes['sign-up__input-name']}
-              />
-              {/* <div style={{ height: '35px', marginTop: '2px', color: '#F5222D' }}>{errors.Username.message}</div> */}
-              {errors.username ? <div className={classes['sign-up__error-elem']}>{errors.username.message}</div> : null}
-            </div>
-            <div className={classes['sign-up__item']}>
-              <h4 className={classes['sign-up__head']}>Email address</h4>
-              <input
-                type="text"
-                {...register('email', {
-                  required: 'Email address is required',
-                  pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: 'Your email must be a valid email address',
-                  },
-                })}
-                placeholder="Email address"
-                className={classes['sign-up__input-name']}
-              />
-              {errors.email ? <div className={classes['sign-up__error-elem']}>{errors.email.message}</div> : null}
-            </div>
-            <div className={classes['sign-up__item']}>
-              <h4 className={classes['sign-up__head']}>Password</h4>
-              <input
-                type="password"
-                {...register('password', {
-                  required: 'Password is required',
-                  minLength: { value: 6, message: 'Your password needs to be at least 6 characters.' },
-                  maxLength: { value: 40, message: 'Your password must not be longer than 40 characters' },
-                })}
-                placeholder="Password"
-                className={classes['sign-up__input-name']}
-              />
-              {errors.password ? <div className={classes['sign-up__error-elem']}>{errors.password.message}</div> : null}
-            </div>
+            {itemCreator(
+              'Username',
+              register(Object.keys(usernameRegister)[0], usernameRegister.username),
+              'username',
+              errors,
+              'sign-up',
+            )}
+            {itemCreator(
+              'Email address',
+              register(Object.keys(emailRegister)[0], emailRegister.email),
+              'email',
+              errors,
+              'sign-up',
+            )}
+            {itemCreator(
+              'Password',
+              register(Object.keys(passwordRegister)[0], passwordRegister.password),
+              'password',
+              errors,
+              'sign-up',
+            )}
             <div className={classes['sign-up__item']}>
               <h4 className={classes['sign-up__head']}>Repeat Password</h4>
               <input
@@ -107,7 +79,6 @@ export function SignUp() {
                     if (text === passwordValue) return true;
                     else return false;
                   },
-                  // onBlur: (text) => text === passwordValue,
                 })}
                 placeholder="Password"
                 className={classes['sign-up__input-name']}

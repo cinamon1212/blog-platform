@@ -25,7 +25,7 @@ export const fetchRegister = createAsyncThunk('account/fetchPostPersonData', asy
 
   if (response.ok) {
     return loginCallback(user);
-  } else return Promise.reject(new Error(response.statusText));
+  } else return Promise.reject(new Error(response));
 });
 
 const loginCallback = async (user) => {
@@ -49,14 +49,14 @@ const loginCallback = async (user) => {
 
 export const fetchLogin = createAsyncThunk('account/fetchLogin', loginCallback);
 
-export const fetchEditProfile = createAsyncThunk('account/fetchEditProfile', async function (user, token) {
+export const fetchEditProfile = createAsyncThunk('account/fetchEditProfile', async function (user) {
   const response = await fetch('https://blog.kata.academy/api/user', {
     method: 'PUT',
     headers: {
-      Authorization: `Token ${token}`,
+      Authorization: `Token ${user.user.token}`,
       'Content-Type': 'application/json',
     },
-    body: user,
+    body: JSON.stringify(user),
   });
 
   if (response.ok) {
@@ -78,6 +78,7 @@ export const fetchGetLoginPerson = createAsyncThunk('account/fetchGetLoginPerson
 
   if (response.ok) {
     const res = await response.json();
+    console.log(res.user);
 
     if (localStorage.getItem('token')) localStorage.removeItem('token');
     localStorage.setItem('token', res.user.token);

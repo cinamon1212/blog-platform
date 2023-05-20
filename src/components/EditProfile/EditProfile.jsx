@@ -1,14 +1,34 @@
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 
+import {
+  itemCreator,
+  usernameRegister,
+  emailRegister,
+  passwordRegister,
+  avatarRegister,
+} from '../../helpers/createInputsItem';
 import { useActions } from '../../hooks/useAction';
 
 import classes from './EditProfile.module.scss';
 
 export function EditProfile() {
+  const errorContainer = useRef();
+  const { clearErrors } = useActions();
   const newPerson = useSelector((state) => state.accountReducer.personData);
+  const error = useSelector((state) => state.accountReducer.errors);
   const token = localStorage.getItem('token');
   const defaultForm = newPerson.user ? (Object.keys(newPerson.user).length ? newPerson.user : {}) : {};
+
+  if (error && Object.keys(error).length && errorContainer.current)
+    errorContainer.current.classList.remove(`${classes['edit-profile__error-container--hidden']}`);
+
+  const onClick = () => {
+    errorContainer.current.classList.add(`${classes['edit-profile__error-container--hidden']}`);
+    clearErrors();
+  };
 
   const {
     register,
@@ -23,89 +43,61 @@ export function EditProfile() {
   const { fetchEditProfile } = useActions();
 
   const onSubmit = (data) => {
-    const user = JSON.stringify(data);
-    console.log(token);
-    fetchEditProfile(user, token);
+    const user = { user: { ...data, token } };
+    console.log(user);
+    fetchEditProfile(user);
     reset();
+    if (error && !Object.keys(error).length) return navigate('/');
   };
+
+  let navigate = useNavigate();
 
   return (
     <div className={classes['edit-profile']}>
       <h1 className={classes['edit-profile__title']}>Edit Profile</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={classes['edit-profile__list']}>
-          <div className={classes['edit-profile__item']}>
-            <h4 className={classes['edit-profile__head']}>Username</h4>
-            <input
-              type="text"
-              {...register('username', {
-                required: 'Username is required',
-                minLength: { value: 3, message: 'Your name needs to be at least 3 characters.' },
-                maxLength: { value: 20, message: 'Your name must not be longer than 20 characters' },
-                pattern: {
-                  value: /^[a-z0-9]*$/,
-                  message: 'You can only use lowercase English letters and numbers',
-                },
-              })}
-              placeholder="Username"
-              className={classes['edit-profile__input-name']}
-            />
-            {errors.username ? (
-              <div className={classes['edit-profile__error-elem']}>{errors.username.message}</div>
-            ) : null}
-          </div>
-          <div className={classes['edit-profile__item']}>
-            <h4 className={classes['edit-profile__head']}>Email address</h4>
-            <input
-              type="text"
-              {...register('email', {
-                required: 'Email address is required',
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: 'Your email must be a valid email address',
-                },
-              })}
-              placeholder="Email address"
-              className={classes['edit-profile__input-name']}
-            />
-            {errors.email ? <div className={classes['edit-profile__error-elem']}>{errors.email.message}</div> : null}
-          </div>
-          <div className={classes['edit-profile__item']}>
-            <h4 className={classes['edit-profile__head']}>New Password</h4>
-            <input
-              type="password"
-              {...register('password', {
-                required: 'Password is required',
-                minLength: { value: 6, message: 'Your password needs to be at least 6 characters.' },
-                maxLength: { value: 40, message: 'Your password must not be longer than 40 characters' },
-              })}
-              placeholder="New Password"
-              className={classes['edit-profile__input-name']}
-            />
-            {errors.password ? (
-              <div className={classes['edit-profile__error-elem']}>{errors.password.message}</div>
-            ) : null}
-          </div>
-          <div className={classes['edit-profile__item']}>
-            <h4 className={classes['edit-profile__head']}>Avatar image (url)</h4>
-            <input
-              type="text"
-              {...register('img', {
-                required: false,
-              })}
-              placeholder="Avatar image"
-              className={classes['edit-profile__input-name']}
-            />
-            {errors.img ? (
-              <div className={classes['edit-profile__error-elem']}>
-                {errors.img ? <div className={classes['edit-profile__error-elem']}>{errors.img.message}</div> : null}
-              </div>
-            ) : null}
-          </div>
+          {itemCreator(
+            'Username',
+            register(Object.keys(usernameRegister)[0], usernameRegister.username),
+            'username',
+            errors,
+            'edit-profile',
+          )}
+          {itemCreator(
+            'Email address',
+            register(Object.keys(emailRegister)[0], emailRegister.email),
+            'email',
+            errors,
+            'edit-profile',
+          )}
+          {itemCreator(
+            'New Password',
+            register(Object.keys(passwordRegister)[0], passwordRegister.password),
+            'password',
+            errors,
+            'edit-profile',
+          )}
+          {itemCreator(
+            'Avatar image (url)',
+            register(Object.keys(avatarRegister)[0], avatarRegister.image),
+            'image',
+            errors,
+            'edit-profile',
+          )}
         </div>
 
         <input type="submit" className={classes['edit-profile__input-submit']} value="Save" />
       </form>
+      <div
+        className={`${classes['edit-profile__error-container']} ${classes['edit-profile__error-container--hidden']}`}
+        ref={errorContainer}
+      >
+        <button className={classes['edit-profile__error-button']} onClick={onClick}>
+          ✖
+        </button>
+        Something went wrong... Try to edit profile again
+      </div>
     </div>
   );
 }
