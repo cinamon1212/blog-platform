@@ -3,9 +3,8 @@ import { useEffect } from 'react';
 import { Spin } from 'antd';
 
 import { useActions } from '../../hooks/useAction';
-// import { fetchArticles } from '../../store/slices/articleSlice';
+import { ArticlePagination } from '../ArticlePagination/ArticlePagination';
 import { ItemList } from '../ItemList/ItemList';
-import { Pagination } from '../Pagination/Pagination';
 
 import classes from './List.module.scss';
 
@@ -45,7 +44,7 @@ export function List() {
           />
         ))}
       </ul>
-      <Pagination />
+      <ArticlePagination />
     </>
   );
 

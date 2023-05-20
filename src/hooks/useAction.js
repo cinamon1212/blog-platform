@@ -3,12 +3,14 @@ import { useMemo } from 'react';
 import { bindActionCreators } from '@reduxjs/toolkit';
 
 import {
-  actions as accountActions,
   fetchRegister,
   fetchLogin,
   fetchGetLoginPerson,
-} from '../store/slices/accountSlice';
-import { fetchArticleBySlug, fetchArticles } from '../store/slices/articleSlice';
+  fetchEditProfile,
+  fetchArticleBySlug,
+  fetchArticles,
+} from '../store/slices/helpersActions/helpersActions';
+import { actions as accountActions } from '../store/slices/accountSlice';
 
 const rootAction = {
   ...accountActions,
@@ -17,6 +19,7 @@ const rootAction = {
   fetchGetLoginPerson,
   fetchArticleBySlug,
   fetchArticles,
+  fetchEditProfile,
 };
 
 export const useActions = () => {

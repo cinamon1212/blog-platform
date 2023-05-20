@@ -12,21 +12,14 @@ import './App.module.scss';
 
 export function App() {
   return (
-    <>
-      {/* <Navigation />
-      <main className={classes.main}> */}
-      <Routes>
-        <Route path="/articles?" element={<Layout />}>
-          <Route index element={<List />} />
-          <Route path={'articles/:id'} element={<ItemList />} />
-          <Route path={'sign-up'} element={<SignUp />}></Route>
-          <Route path={'sign-in'} element={<SignIn />} />
-          <Route path={'profile'} element={<EditProfile />} />
-        </Route>
-      </Routes>
-
-      {/* <sign-up /> */}
-      {/* </main> */}
-    </>
+    <Routes>
+      <Route path="/articles?" element={<Layout />}>
+        <Route index element={<List />} />
+        <Route path={'articles/:id'} element={<ItemList />} />
+        <Route path={'sign-up'} element={<SignUp />}></Route>
+        <Route path={'sign-in'} element={<SignIn />} />
+        <Route path={'profile'} element={<EditProfile />} />
+      </Route>
+    </Routes>
   );
 }

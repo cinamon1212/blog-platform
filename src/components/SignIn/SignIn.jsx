@@ -14,9 +14,8 @@ export function SignIn() {
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm({ mode: 'onBlur' });
-
-  const { fetchLogin } = useActions();
+  } = useForm({ mode: 'onSubmit' });
+  const { fetchLogin, clearErrors } = useActions();
 
   const errorContainer = useRef();
 
@@ -30,11 +29,12 @@ export function SignIn() {
     reset();
   };
 
-  if (error && Object.keys(error).length)
+  if (error && Object.keys(error).length && errorContainer.current)
     errorContainer.current.classList.remove(`${classes['sign-in__error-container--hidden']}`);
 
   const onClick = () => {
     errorContainer.current.classList.add(`${classes['sign-in__error-container--hidden']}`);
+    clearErrors();
   };
 
   if (user && Object.keys(user).length) return <Navigate replace to={'/'} />;

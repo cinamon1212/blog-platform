@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
+import { Pagination } from 'antd';
 
 import { useActions } from '../../hooks/useAction';
 
-export function Pagination() {
+export function ArticlePagination() {
   const { fetchArticles } = useActions();
   const page = useSelector((state) => state.articleReducer.page);
   const total = useSelector((state) => state.articleReducer.articlesCount);

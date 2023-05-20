@@ -18,7 +18,7 @@ export function SignUp() {
   } = useForm({ mode: 'onSubmit' });
 
   const errorContainer = useRef();
-  const { fetchRegister } = useActions();
+  const { fetchRegister, clearErrors } = useActions();
 
   const error = useSelector((state) => state.accountReducer.errors);
   const user = useSelector((state) => state.accountReducer.personData);
@@ -37,6 +37,7 @@ export function SignUp() {
 
   const onClick = () => {
     errorContainer.current.classList.add(`${classes['sign-up__error-container--hidden']}`);
+    clearErrors();
   };
 
   if (user && Object.keys(user).length) return <Navigate replace to={'/'} />;

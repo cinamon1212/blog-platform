@@ -7,20 +7,25 @@ import classes from './EditProfile.module.scss';
 
 export function EditProfile() {
   const newPerson = useSelector((state) => state.accountReducer.personData);
-  console.log(newPerson);
+  const token = localStorage.getItem('token');
+  const defaultForm = newPerson.user ? (Object.keys(newPerson.user).length ? newPerson.user : {}) : {};
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm({ mode: 'onBlur', defaultValues: newPerson });
+  } = useForm({
+    mode: 'onSubmit',
+    defaultValues: defaultForm,
+  });
 
   const { fetchEditProfile } = useActions();
 
   const onSubmit = (data) => {
-    // console.log(JSON.stringify(data
-    fetchEditProfile(JSON.stringify(data), newPerson.token);
+    const user = JSON.stringify(data);
+    console.log(token);
+    fetchEditProfile(user, token);
     reset();
   };
 
@@ -63,9 +68,7 @@ export function EditProfile() {
               placeholder="Email address"
               className={classes['edit-profile__input-name']}
             />
-            {errors['Email address'] ? (
-              <div className={classes['edit-profile__error-elem']}>{errors['Email address'].message}</div>
-            ) : null}
+            {errors.email ? <div className={classes['edit-profile__error-elem']}>{errors.email.message}</div> : null}
           </div>
           <div className={classes['edit-profile__item']}>
             <h4 className={classes['edit-profile__head']}>New Password</h4>
@@ -86,14 +89,14 @@ export function EditProfile() {
           <div className={classes['edit-profile__item']}>
             <h4 className={classes['edit-profile__head']}>Avatar image (url)</h4>
             <input
-              type="password"
+              type="text"
               {...register('img', {
-                required: 'Avatar image is required',
+                required: false,
               })}
               placeholder="Avatar image"
               className={classes['edit-profile__input-name']}
             />
-            {errors['Avatar image'] ? (
+            {errors.img ? (
               <div className={classes['edit-profile__error-elem']}>
                 {errors.img ? <div className={classes['edit-profile__error-elem']}>{errors.img.message}</div> : null}
               </div>
