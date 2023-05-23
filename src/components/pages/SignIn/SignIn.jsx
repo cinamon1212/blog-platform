@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { NavLink, Navigate } from 'react-router-dom';
 
-import { useActions } from '../../hooks/useAction';
-import { itemCreator, emailRegister, passwordRegister } from '../../helpers/createInputsItem';
+import { useActions } from '../../../hooks/useAction';
+import { itemCreator, emailRegister, passwordRegister } from '../../../helpers/createInputsItem';
 
 import classes from './SignIn.module.scss';
 

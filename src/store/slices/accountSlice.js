@@ -37,7 +37,6 @@ const accountSlice = createSlice({
     });
 
     builder.addCase(fetchGetLoginPerson.fulfilled, (state, action) => {
-      console.log(action);
       state.personData = { ...action.payload };
     });
 

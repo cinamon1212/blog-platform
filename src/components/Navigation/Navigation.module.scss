@@ -23,18 +23,24 @@
   }
 
   &__item {
-    padding: 5px 10px;
-    border: 1px solid rgba(0, 0, 0, 0.85);
-    border-radius: 5px;
+    &:active {
+      padding: 5px 10px;
+      border: 1px solid rgba(0, 0, 0, 0.85);
+      border-radius: 5px;
+    }
   }
 
   &__create-article {
     font-size: 14px;
     line-height: 22px;
-    border: 1px solid #52c41a;
-    border-radius: 5px;
-    color: #52c41a;
-    padding: 3px 7px;
+    vertical-align: middle;
+
+    &:active {
+      border: 1px solid #52c41a;
+      border-radius: 5px;
+      color: #52c41a;
+      padding: 3px 7px;
+    }
   }
 
   &__img-profile {

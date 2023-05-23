@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 import { Pagination } from 'antd';
 
-import { useActions } from '../../hooks/useAction';
+import { useActions } from '../../../../hooks/useAction';
 
 export function ArticlePagination() {
   const { fetchArticles } = useActions();
-  const page = useSelector((state) => state.articleReducer.page);
-  const total = useSelector((state) => state.articleReducer.articlesCount);
+  const page = useSelector((state) => state.articleReducer.getArticle.page);
+  const total = useSelector((state) => state.articleReducer.getArticle.articlesCount);
   const newPerson = useSelector((state) => state.accountReducer.personData);
 
   const onChange = (e) => {

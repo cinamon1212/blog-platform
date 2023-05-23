@@ -78,7 +78,6 @@ export const fetchGetLoginPerson = createAsyncThunk('account/fetchGetLoginPerson
 
   if (response.ok) {
     const res = await response.json();
-    console.log(res.user);
 
     if (localStorage.getItem('token')) localStorage.removeItem('token');
     localStorage.setItem('token', res.user.token);

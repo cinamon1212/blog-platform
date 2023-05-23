@@ -1,15 +1,29 @@
 import classes from './helpers.module.scss';
 
-export const itemCreator = (headText, register, errorsKey, errors, classN) => {
+export const itemCreator = (headText, register, errorsKey, errors, classN, placeholder, textareaClassN) => {
+  const textarea = textareaClassN ? (
+    <textarea
+      type={'text'}
+      className={classes[`${textareaClassN}`]}
+      placeholder={placeholder ? placeholder : headText}
+      {...register}
+    ></textarea>
+  ) : null;
+
   return (
     <div className={classes[`${classN}__item`]}>
       <h4 className={classes[`${classN}__head`]}>{headText}</h4>
-      <input
-        type={headText.includes('Password') ? 'password' : 'text'}
-        {...register}
-        placeholder={headText}
-        className={classes[`${classN}__input-name`]}
-      />
+      {textarea ? (
+        textarea
+      ) : (
+        <input
+          type={headText.includes('Password') ? 'password' : 'text'}
+          {...register}
+          placeholder={placeholder ? placeholder : headText}
+          className={classes[`${classN}__input-name`]}
+        />
+      )}
+
       {errors[`${errorsKey}`] ? (
         <div className={classes[`${classN}__error-elem`]}>{errors[`${errorsKey}`].message}</div>
       ) : null}
@@ -53,6 +67,29 @@ export const avatarRegister = {
     pattern: {
       value: /^(ftp|http|https):\/\/[^ "]+$/,
       message: 'Your avatar must be a valid image address',
+    },
+  },
+};
+
+export const titleRegister = {
+  title: {
+    required: 'Title is required',
+  },
+};
+
+export const descriptionRegister = {
+  description: {
+    required: 'Description is required',
+  },
+};
+
+export const textRegister = {
+  text: {
+    required: 'Text is required field',
+    setValueAs: (v) => v.trim(),
+    minLength: {
+      value: 10,
+      message: 'Text field must have min 10 characters',
     },
   },
 };

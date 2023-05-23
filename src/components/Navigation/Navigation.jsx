@@ -9,7 +9,6 @@ import classes from './Navigation.module.scss';
 export function Navigation() {
   const setActive = ({ isActive }) => (isActive ? classes['nav__active-item'] : '');
   const newPerson = useSelector((state) => state.accountReducer.personData);
-  console.log(newPerson);
   const token = localStorage.getItem('token');
 
   const { clearState, fetchGetLoginPerson } = useActions();
@@ -24,10 +23,12 @@ export function Navigation() {
 
   const authorizationList = (
     <>
-      <Link to={'sign-in'} className={classes['nav__create-article']}>
+      <Link to={'new-article'} className={classes['nav__create-article']}>
         Create article
       </Link>
-      <Link to={'profile'}>{newPerson?.user?.username}</Link>
+      <Link to={'profile'} className={classes.nav__item}>
+        {newPerson?.user?.username}
+      </Link>
       {newPerson?.user?.image ? (
         <Link to={'profile'}>
           {' '}
@@ -55,7 +56,9 @@ export function Navigation() {
   const content = newPerson?.user && Object.keys(newPerson.user).length ? authorizationList : defaultList;
   return (
     <nav className={classes.nav}>
-      <div>Realworld Blog</div>
+      <Link to={'/'} className={classes.nav__item}>
+        Realworld Blog
+      </Link>
       <div className={classes.nav__authorization}>{content}</div>
     </nav>
   );

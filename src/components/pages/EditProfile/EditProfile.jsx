@@ -9,8 +9,8 @@ import {
   emailRegister,
   passwordRegister,
   avatarRegister,
-} from '../../helpers/createInputsItem';
-import { useActions } from '../../hooks/useAction';
+} from '../../../helpers/createInputsItem';
+import { useActions } from '../../../hooks/useAction';
 
 import classes from './EditProfile.module.scss';
 

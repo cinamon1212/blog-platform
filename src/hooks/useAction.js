@@ -11,9 +11,11 @@ import {
   fetchArticles,
 } from '../store/slices/helpersActions/helpersActions';
 import { actions as accountActions } from '../store/slices/accountSlice';
+import { actions as articleActions } from '../store/slices/articleSlice';
 
 const rootAction = {
   ...accountActions,
+  ...articleActions,
   fetchRegister,
   fetchLogin,
   fetchGetLoginPerson,

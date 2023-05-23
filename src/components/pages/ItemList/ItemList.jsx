@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
-import { useActions } from '../../hooks/useAction';
+import { useActions } from '../../../hooks/useAction';
 // import { fetchArticleBySlug } from '../../store/slices/articleSlice';
 
 import classes from './ItemList.module.scss';
@@ -36,7 +36,7 @@ export function ItemList(props) {
 
   const { fetchArticleBySlug } = useActions();
 
-  const item = useSelector((state) => state.articleReducer.openedItem);
+  const item = useSelector((state) => state.articleReducer.getArticle.openedItem);
 
   const { createdAt, slug, title, favoritesCount, tagList, description, author, month, day, year, body } = Object.keys(
     props,

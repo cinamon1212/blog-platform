@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { NavLink, Navigate } from 'react-router-dom';
 import { useRef } from 'react';
 
-import { useActions } from '../../hooks/useAction';
-import { itemCreator, usernameRegister, emailRegister, passwordRegister } from '../../helpers/createInputsItem';
+import { useActions } from '../../../hooks/useAction';
+import { itemCreator, usernameRegister, emailRegister, passwordRegister } from '../../../helpers/createInputsItem';
 
 import classes from './SignUp.module.scss';
 

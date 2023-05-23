@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { Spin } from 'antd';
 
-import { useActions } from '../../hooks/useAction';
-import { ArticlePagination } from '../ArticlePagination/ArticlePagination';
+import { useActions } from '../../../hooks/useAction';
 import { ItemList } from '../ItemList/ItemList';
 
+import { ArticlePagination } from './ArticlePagination/ArticlePagination';
 import classes from './List.module.scss';
 
 const Loader = () => (
@@ -15,9 +15,9 @@ const Loader = () => (
 );
 
 export function List() {
-  const loading = useSelector((state) => state.articleReducer.loading);
-  const articles = useSelector((state) => state.articleReducer.articles);
-  const page = useSelector((state) => state.articleReducer.page);
+  const loading = useSelector((state) => state.articleReducer.getArticle.loading);
+  const articles = useSelector((state) => state.articleReducer.getArticle.articles);
+  const page = useSelector((state) => state.articleReducer.getArticle.page);
   // const dispatch = useDispatch();
 
   const { fetchArticles } = useActions();
