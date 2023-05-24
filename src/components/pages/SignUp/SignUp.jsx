@@ -30,7 +30,6 @@ export function SignUp() {
 
   const onSubmit = (data) => {
     const resData = JSON.stringify({ user: { username: data.username, email: data.email, password: data.password } });
-    console.log(resData);
     fetchRegister(resData);
     reset();
   };
@@ -53,6 +52,7 @@ export function SignUp() {
               errorsKey: 'username',
               errors,
               classN: 'sign-up',
+              noChanged: true,
             })}
             {itemCreator({
               headText: 'Email address',
@@ -60,6 +60,7 @@ export function SignUp() {
               errorsKey: 'email',
               errors,
               classN: 'sign-up',
+              noChanged: true,
             })}
             {itemCreator({
               headText: 'Password',
@@ -67,6 +68,7 @@ export function SignUp() {
               errorsKey: 'password',
               errors,
               classN: 'sign-up',
+              noChanged: true,
             })}
             <div className={classes['sign-up__item']}>
               <h4 className={classes['sign-up__head']}>Repeat Password</h4>

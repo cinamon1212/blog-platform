@@ -9,16 +9,8 @@ import { itemCreator, titleRegister, textRegister, descriptionRegister } from '.
 import classes from './CreateArticle.module.scss';
 
 export function CreateArticle() {
-  const {
-    clearErrors,
-    addTags,
-    deleteTags,
-    createArticle,
-    updateArticle,
-    tagValueChange,
-    fetchArticleBySlug,
-    clearOpenedItem,
-  } = useActions();
+  const { clearErrors, addTags, deleteTags, createArticle, updateArticle, tagValueChange, fetchArticleBySlug } =
+    useActions();
   const errorContainer = useRef();
   const addTag = useRef();
 
@@ -26,15 +18,11 @@ export function CreateArticle() {
   const tagsList = useSelector((state) => state.articleReducer.postArticle.tags);
   const item = useSelector((state) => state.articleReducer.getArticle.openedItem);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  // console.log(location);
-  const isEditingOrCreating = location.pathname.includes('edit') ? 'edit' : 'create';
 
-  useEffect(() => {
-    if (isEditingOrCreating === 'create') clearOpenedItem();
-  }, [isEditingOrCreating]);
+  const isEditingOrCreating = location.pathname.includes('edit') ? 'edit' : 'create';
 
   useEffect(() => {
     if (id && isEditingOrCreating === 'edit') fetchArticleBySlug(id);
@@ -55,7 +43,7 @@ export function CreateArticle() {
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm({ mode: 'onSubmit', defaultValues: item ? item : {} });
+  } = useForm({ mode: 'onSubmit', defaultValues: isEditingOrCreating === 'edit' ? item : {} });
 
   if (error && Object.keys(error).length && errorContainer.current)
     errorContainer.current.classList.remove(`${classes['create-article__error-container--hidden']}`);
@@ -68,7 +56,7 @@ export function CreateArticle() {
   const onSubmit = (data) => {
     const token = localStorage.getItem('token');
 
-    if (!Object.keys(item).length) {
+    if (isEditingOrCreating === 'create') {
       const tags = [];
       for (const item in data) {
         if (item.includes('tag')) {
@@ -78,7 +66,7 @@ export function CreateArticle() {
       }
       const resData = { article: { ...data, tagList: tags, token } };
       createArticle(resData);
-    } else {
+    } else if (isEditingOrCreating === 'edit') {
       const tags = [];
       tagsList.forEach((tag) => {
         tags.push(tag.inputValue);
@@ -106,7 +94,7 @@ export function CreateArticle() {
     deleteTags(id);
   };
 
-  const onChange = (e, id) => {
+  const onTagChange = (e, id) => {
     tagValueChange({ id, value: e.target.value });
   };
 
@@ -123,7 +111,9 @@ export function CreateArticle() {
             errorsKey: 'title',
             errors,
             classN: 'create-article',
-            defaultValue: item.title,
+            // defaultValue: isEditingOrCreating === 'edit' ? item.title : '',
+            value: item.title ? item.title : '',
+            // noChanged: true,
           })}
           {itemCreator({
             headText: 'Short description',
@@ -132,7 +122,9 @@ export function CreateArticle() {
             errors,
             classN: 'create-article',
             placeholder: 'Description',
-            defaultValue: item.description,
+            // defaultValue: isEditingOrCreating === 'edit' ? item.description : '',
+            value: item.description ? item.description : '',
+            // noChanged: true,
           })}
           {itemCreator({
             headText: 'Text',
@@ -141,7 +133,9 @@ export function CreateArticle() {
             errors,
             classN: 'create-article',
             textareaClassN: 'create-article__textarea',
-            defaultValue: item.body,
+            // defaultValue: isEditingOrCreating === 'edit' ? item.body : '',
+            value: item.body ? item.body : '',
+            // noChanged: true,
           })}
           <div className={classes['create-article__item']}>
             <h4 className={classes['create-article__head']}>Tags</h4>
@@ -152,10 +146,11 @@ export function CreateArticle() {
                     type="text"
                     placeholder={'Tag'}
                     className={`${classes['create-article__input-name']} ${classes['create-article__input-name--tag']}`}
-                    defaultValue={typeof tag === 'object' ? tag.inputValue : tag}
+                    // defaultValue={typeof tag === 'object' ? tag.inputValue : tag}
+                    value={tag.inputValue}
                     maxLength={20}
                     {...register(`tag-${i}`, { require: false })}
-                    onChange={(e) => onChange(e, i)}
+                    onChange={(e) => onTagChange(e, i)}
                   />
 
                   <button

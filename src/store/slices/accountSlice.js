@@ -6,15 +6,15 @@ const accountSlice = createSlice({
   name: 'account',
   initialState: {
     personData: {},
-    errors: {},
+    errors: [],
   },
   reducers: {
     clearState(state) {
       state.personData = {};
-      localStorage.clear();
+      localStorage.removeItem('token');
     },
     clearErrors(state) {
-      state.errors = {};
+      state.errors = [];
     },
   },
   extraReducers: (builder) => {
@@ -24,16 +24,16 @@ const accountSlice = createSlice({
 
     builder.addCase(fetchRegister.rejected, (state, action) => {
       console.log(action);
-      state.errors = { ...action.error };
+      state.errors.push(action.payload);
     });
 
     builder.addCase(fetchLogin.fulfilled, (state, action) => {
-      console.log(action);
       state.personData = { ...action.payload };
     });
 
     builder.addCase(fetchLogin.rejected, (state, action) => {
-      state.errors = { ...action.error };
+      console.log(action);
+      state.errors.push(action.payload);
     });
 
     builder.addCase(fetchGetLoginPerson.fulfilled, (state, action) => {
@@ -42,6 +42,7 @@ const accountSlice = createSlice({
 
     builder.addCase(fetchGetLoginPerson.rejected, (state, action) => {
       console.log(action);
+      state.errors.push(action.payload);
     });
 
     builder.addCase(fetchEditProfile.fulfilled, (state, action) => {
@@ -49,7 +50,8 @@ const accountSlice = createSlice({
     });
 
     builder.addCase(fetchEditProfile.rejected, (state, action) => {
-      state.errors = { ...action.error };
+      console.log(action);
+      state.errors.push(action.payload);
     });
   },
 });

@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useRef } from 'react';
-import { NavLink, Navigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useActions } from '../../../hooks/useAction';
 import { itemCreator, emailRegister, passwordRegister } from '../../../helpers/createInputsItem';
@@ -18,25 +18,27 @@ export function SignIn() {
   const { fetchLogin, clearErrors } = useActions();
 
   const errorContainer = useRef();
+  const navigate = useNavigate();
 
   const error = useSelector((state) => state.accountReducer.errors);
-  const user = useSelector((state) => state.accountReducer.personData);
 
   const onSubmit = (data) => {
     const user = JSON.stringify({ user: { ...data } });
     fetchLogin(user);
     reset();
+    if (error && !error.length) {
+      console.log(error);
+      return navigate('/');
+    }
   };
 
-  if (error && Object.keys(error).length && errorContainer.current)
+  if (error && error.length && errorContainer.current)
     errorContainer.current.classList.remove(`${classes['sign-in__error-container--hidden']}`);
 
   const onClick = () => {
     errorContainer.current.classList.add(`${classes['sign-in__error-container--hidden']}`);
     clearErrors();
   };
-
-  if (user && Object.keys(user).length) return <Navigate replace to={'/'} />;
 
   return (
     <div className={classes['sign-in']}>
@@ -49,6 +51,7 @@ export function SignIn() {
             errorsKey: 'email',
             errors,
             classN: 'sign-in',
+            noChanged: true,
           })}
           {itemCreator({
             headText: 'Password',
@@ -56,6 +59,7 @@ export function SignIn() {
             errorsKey: 'password',
             errors,
             classN: 'sign-in',
+            noChanged: true,
           })}
         </div>
 

@@ -60,6 +60,7 @@ export function EditProfile() {
             errorsKey: 'username',
             errors,
             classN: 'edit-profile',
+            noChanged: true,
           })}
           {itemCreator({
             headText: 'Email address',
@@ -67,6 +68,7 @@ export function EditProfile() {
             errorsKey: 'email',
             errors,
             classN: 'edit-profile',
+            noChanged: true,
           })}
           {itemCreator({
             headText: 'New Password',
@@ -74,6 +76,7 @@ export function EditProfile() {
             errorsKey: 'password',
             errors,
             classN: 'edit-profile',
+            noChanged: true,
           })}
           {itemCreator({
             headText: 'Avatar image (url)',
@@ -81,6 +84,7 @@ export function EditProfile() {
             errorsKey: 'image',
             errors,
             classN: 'edit-profile',
+            noChanged: true,
           })}
         </div>
 

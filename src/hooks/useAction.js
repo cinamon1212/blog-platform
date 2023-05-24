@@ -11,7 +11,9 @@ import {
   createArticle,
   updateArticle,
   fetchArticles,
+  favoriteIcon,
   deleteArticle,
+  unFavoriteIcon,
 } from '../store/slices/helpersActions/helpersActions';
 import { actions as accountActions } from '../store/slices/accountSlice';
 import { actions as articleActions } from '../store/slices/articleSlice';
@@ -23,11 +25,13 @@ const rootAction = {
   fetchLogin,
   fetchGetLoginPerson,
   fetchArticleBySlug,
+  favoriteIcon,
   fetchArticles,
   fetchEditProfile,
   createArticle,
   updateArticle,
   deleteArticle,
+  unFavoriteIcon,
 };
 
 export const useActions = () => {

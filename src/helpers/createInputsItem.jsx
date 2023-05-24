@@ -1,3 +1,5 @@
+import { useActions } from '../hooks/useAction';
+
 import classes from './helpers.module.scss';
 
 export const itemCreator = ({
@@ -8,15 +10,25 @@ export const itemCreator = ({
   classN,
   placeholder,
   textareaClassN,
-  defaultValue,
+  // defaultValue,
+  noChanged,
+  value,
 }) => {
+  const { inputValueChange } = useActions();
+
+  const onInputChange = (e, name) => {
+    inputValueChange({ name, inputValue: e.target.value });
+  };
+
   const textarea = textareaClassN ? (
     <textarea
       type={'text'}
       className={classes[`${textareaClassN}`]}
       placeholder={placeholder ? placeholder : headText}
       {...register}
-      defaultValue={defaultValue ? defaultValue : null}
+      // defaultValue={defaultValue ? defaultValue : ''}
+      value={value}
+      onChange={noChanged ? () => {} : (e) => onInputChange(e, errorsKey)}
     ></textarea>
   ) : null;
 
@@ -31,7 +43,9 @@ export const itemCreator = ({
           {...register}
           placeholder={placeholder ? placeholder : headText}
           className={classes[`${classN}__input-name`]}
-          defaultValue={defaultValue ? defaultValue : null}
+          // defaultValue={defaultValue ? defaultValue : ''}
+          value={value}
+          onChange={noChanged ? () => {} : (e) => onInputChange(e, errorsKey)}
         />
       )}
 

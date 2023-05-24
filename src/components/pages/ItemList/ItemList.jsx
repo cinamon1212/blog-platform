@@ -1,69 +1,60 @@
 import { useEffect, useRef } from 'react';
 import { format } from 'date-fns';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
 import { useActions } from '../../../hooks/useAction';
 
 import classes from './ItemList.module.scss';
+import { Confirm } from './Confirm/Confirm';
 
 const getElementProps = (
-  { createdAt, slug, title, favoritesCount, tagList, description, author, body },
+  { createdAt, slug, title, favoritesCount, tagList, description, author, body, favorited },
   isShowText,
 ) => {
-  let date;
-  let month;
-  let day;
-  let year;
+  const date = createdAt ? format(new Date(createdAt), 'MMMM d, yyyy') : null;
 
-  if (createdAt) {
-    date = new Date(createdAt);
-    month = format(date.getMonth(), 'MMMM');
-    day = date.getDay() + 1;
-    year = date.getFullYear();
-  }
-
-  let res = { createdAt, slug, title, favoritesCount, tagList, description, author, month, day, year };
+  let res = { createdAt, slug, title, favoritesCount, tagList, description, author, date, favorited };
   if (isShowText) res = { ...res, body };
 
   return res;
 };
 
 export function ItemList(props) {
-  const { fetchArticleBySlug, deleteArticle } = useActions();
+  const { fetchArticleBySlug, favoriteIcon, unFavoriteIcon } = useActions();
   const item = useSelector((state) => state.articleReducer.getArticle.openedItem);
   const newPerson = useSelector((state) => state.accountReducer.personData);
-  // const error = useSelector((state) => state.articleReducer.errors);
+  const liked = JSON.parse(localStorage.getItem('liked'));
+
+  const location = useLocation();
 
   const { id } = useParams();
   let navigate = useNavigate();
-  const deleteButton = useRef();
-  const editButton = useRef();
+  const buttonsContainer = useRef();
 
   useEffect(() => {
     if (id) fetchArticleBySlug(id);
   }, [id]);
 
-  const { createdAt, slug, title, favoritesCount, tagList, description, author, month, day, year, body } = Object.keys(
-    props,
-  ).length
+  const { createdAt, slug, title, favoritesCount, tagList, description, author, body, date } = Object.keys(props).length
     ? { ...getElementProps(props, false) }
     : { ...getElementProps(item, true) };
 
-  if (newPerson && item && Object.keys(newPerson).length && Object.keys(item).length) {
-    if (newPerson.user.username === item.author.username && deleteButton.current && editButton.current) {
-      deleteButton.current.classList.remove(`${classes['list__delete-tag--hidden']}`);
-      editButton.current.classList.remove(`${classes['list__create-article--hidden']}`);
-    } else if (deleteButton.current && editButton.current) {
-      deleteButton.current.classList.add(`${classes['list__delete-tag--hidden']}`);
-      editButton.current.classList.add(`${classes['list__create-article--hidden']}`);
+  if (newPerson && item && author) {
+    if (Object.keys(newPerson).length && Object.keys(item).length && Object.keys(author).length) {
+      if (newPerson.user.username === author.username && buttonsContainer.current && location.pathname !== '/') {
+        buttonsContainer.current.classList.remove(`${classes['list__buttons-container--hidden']}`);
+      } else if (buttonsContainer.current) {
+        buttonsContainer.current.classList.add(`${classes['list__buttons-container--hidden']}`);
+      }
     }
   }
 
-  const deleteArticles = () => {
-    deleteArticle({ slug: item.slug, token: localStorage.getItem('token') });
-    return navigate('/');
+  const onIconClick = () => {
+    const token = localStorage.getItem('token');
+    if ((!liked || !liked.includes(slug)) && token) favoriteIcon({ slug: slug, token });
+    else if (token) unFavoriteIcon({ slug: slug, token });
   };
 
   return (
@@ -74,7 +65,14 @@ export function ItemList(props) {
             <h3 className={classes['list__item-title']}>{title}</h3>
           </Link>
           <div className={classes['list__item-icon']}>
-            <div className={classes['list__item-heart']}></div>
+            <div
+              className={
+                !Object.keys(newPerson).length || !liked.includes(slug)
+                  ? classes['list__item-heart']
+                  : `${classes['list__item-heart']} ${classes['list__item-heart--active']}`
+              }
+              onClick={onIconClick}
+            ></div>
             <span>{favoritesCount}</span>
           </div>
         </header>
@@ -95,33 +93,26 @@ export function ItemList(props) {
       </div>
       <div className={classes['list__item-preview']}>
         <div className={classes['list__item-person']}>
-          <div>
+          <div className={classes['list__item-date']}>
             <h3 className={classes['list__item-name']}>{author ? author.username : null}</h3>
-            <span className={classes['list__item-data']}>{createdAt ? `${month} ${day}, ${year}` : null} </span>
+            <span className={classes['list__item-data']}>{createdAt ? date : null} </span>
           </div>
           <img src={author ? author.image : null} alt="person-icon" className={classes['list__item-people']} />
         </div>
 
-        <div className={classes['list__buttons-container']}>
+        <div
+          className={`${classes['list__buttons-container']} ${classes['list__buttons-container--hidden']}`}
+          ref={buttonsContainer}
+        >
+          <Confirm />
           <button
             type="button"
-            className={`${classes['list__delete-tag']} ${classes['list__delete-tag--hidden']}`}
-            ref={deleteButton}
-            onClick={deleteArticles}
-          >
-            Delete
-          </button>
-          <button
-            type="button"
-            className={`${classes['list__create-article']} ${classes['list__create-article--hidden']}`}
+            className={classes['list__create-article']}
             onClick={() => navigate(`/articles/${item.slug}/edit`)}
-            ref={editButton}
           >
             Edit
           </button>
         </div>
-
-        {/* <div className={classes['list__item-people']}></div> */}
       </div>
     </li>
   );

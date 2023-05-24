@@ -11,7 +11,7 @@ export function Navigation() {
   const newPerson = useSelector((state) => state.accountReducer.personData);
   const token = localStorage.getItem('token');
 
-  const { clearState, fetchGetLoginPerson } = useActions();
+  const { clearState, fetchGetLoginPerson, clearOpenedItem } = useActions();
 
   const onLogOutClick = () => {
     clearState();
@@ -21,9 +21,13 @@ export function Navigation() {
     if (token) fetchGetLoginPerson(token);
   }, [token]);
 
+  const onCreateClick = () => {
+    clearOpenedItem();
+  };
+
   const authorizationList = (
     <>
-      <Link to={'new-article'} className={classes['nav__create-article']}>
+      <Link to={'new-article'} className={classes['nav__create-article']} onClick={onCreateClick}>
         Create article
       </Link>
       <Link to={'profile'} className={classes.nav__item}>

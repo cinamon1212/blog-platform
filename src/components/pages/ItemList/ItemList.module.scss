@@ -6,11 +6,12 @@
     display: flex;
     justify-content: space-between;
     background-color: white;
-    padding: 15px;
+    padding: 20px;
     padding-bottom: 25px;
     margin-bottom: 26px;
     border-radius: 5px;
     gap: 10px;
+    max-width: 940px;
 
     &:last-child {
       margin-bottom: 0;
@@ -42,6 +43,10 @@
     align-items: center;
     gap: 10px;
     margin-top: 30px;
+
+    &--hidden {
+      display: none;
+    }
   }
 
   &__item-icon {
@@ -52,8 +57,15 @@
 
   &__item-heart {
     background-image: url('./image/iconHeart.svg');
+    display: flex;
+    align-items: center;
     width: 16px;
-    height: 16px;
+    height: 14px;
+    cursor: pointer;
+
+    &--active {
+      background-image: url('./image/iconHeartActive.svg');
+    }
   }
 
   &__item-people {
@@ -103,13 +115,14 @@
     line-height: 22px;
     vertical-align: middle;
     width: 80px;
-    height: 30px;
-    box-sizing: border-box;
+    height: 32px;
+    // box-sizing: border-box;
     background-color: white;
     border: 1px solid #52c41a;
     border-radius: 5px;
     color: #52c41a;
     cursor: pointer;
+    font-size: 14px;
 
     &--hidden {
       display: none;
@@ -123,6 +136,12 @@
     font-size: 12px;
     line-height: 15px;
     flex-wrap: wrap;
+  }
+
+  &__item-date {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
   }
 
   &__item-tag {

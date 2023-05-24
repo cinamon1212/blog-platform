@@ -6,6 +6,8 @@ import {
   createArticle,
   updateArticle,
   deleteArticle,
+  favoriteIcon,
+  unFavoriteIcon,
 } from './helpersActions/helpersActions';
 
 const articleSlice = createSlice({
@@ -23,6 +25,9 @@ const articleSlice = createSlice({
     },
     postArticle: {
       tags: [],
+      title: '',
+      description: '',
+      body: '',
     },
     errors: [],
   },
@@ -39,6 +44,11 @@ const articleSlice = createSlice({
     },
     clearOpenedItem: (state) => {
       state.getArticle.openedItem = {};
+      state.postArticle.tags = [];
+      state.getArticle.tags = [];
+    },
+    inputValueChange: (state, action) => {
+      state.getArticle.openedItem[action.payload.name] = action.payload.inputValue;
     },
   },
   extraReducers: (builder) => {
@@ -66,15 +76,55 @@ const articleSlice = createSlice({
     });
 
     builder.addCase(createArticle.rejected, (state, action) => {
-      state.errors = { ...action.error };
+      console.log(action);
     });
 
     builder.addCase(updateArticle.rejected, (state, action) => {
-      state.errors = { ...action.error };
+      console.log(action);
     });
 
     builder.addCase(deleteArticle.rejected, (state, action) => {
-      state.errors = { ...action.error };
+      console.log(action);
+    });
+
+    builder.addCase(favoriteIcon.fulfilled, (state, action) => {
+      state.getArticle.articles.map((article) => {
+        if (article.slug === action.payload.article.slug) {
+          const liked = JSON.parse(localStorage.getItem('liked'));
+
+          if (!liked) localStorage.setItem('liked', JSON.stringify([action.payload.article.slug]));
+          else localStorage.setItem('liked', JSON.stringify([...liked, action.payload.article.slug]));
+          article.favoritesCount = action.payload.article.favoritesCount;
+          article.favorited = action.payload.article.favorited;
+          state.getArticle.openedItem.favoritesCount = action.payload.article.favoritesCount;
+          state.getArticle.openedItem.favorited = action.payload.article.favorited;
+        }
+      });
+    });
+
+    builder.addCase(favoriteIcon.rejected, (state, action) => {
+      console.log(action);
+    });
+
+    builder.addCase(unFavoriteIcon.fulfilled, (state, action) => {
+      state.getArticle.articles.map((article) => {
+        if (article.slug === action.payload.article.slug) {
+          const liked = JSON.parse(localStorage.getItem('liked'));
+          const resLiked = liked.filter((slug) => {
+            if (slug === action.payload.article.slug) return false;
+            else return true;
+          });
+          localStorage.setItem('liked', JSON.stringify([...resLiked]));
+          article.favoritesCount = action.payload.article.favoritesCount;
+          article.favorited = action.payload.article.favorited;
+          state.getArticle.openedItem.favoritesCount = action.payload.article.favoritesCount;
+          state.getArticle.openedItem.favorited = action.payload.article.favorited;
+        }
+      });
+    });
+
+    builder.addCase(unFavoriteIcon.rejected, (state, action) => {
+      console.log(action);
     });
   },
 });

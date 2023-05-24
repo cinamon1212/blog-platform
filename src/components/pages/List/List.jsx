@@ -18,7 +18,6 @@ export function List() {
   const loading = useSelector((state) => state.articleReducer.getArticle.loading);
   const articles = useSelector((state) => state.articleReducer.getArticle.articles);
   const page = useSelector((state) => state.articleReducer.getArticle.page);
-  // const dispatch = useDispatch();
 
   const { fetchArticles } = useActions();
 
@@ -41,6 +40,7 @@ export function List() {
             author={article.author}
             createdAt={article.createdAt}
             tagList={article.tagList}
+            favorited={article.favorited}
           />
         ))}
       </ul>
