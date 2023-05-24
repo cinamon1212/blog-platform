@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-// import { NavLink } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
 
 import { useActions } from '../../../hooks/useAction';
 import { itemCreator, titleRegister, textRegister, descriptionRegister } from '../../../helpers/createInputsItem';
@@ -10,20 +10,52 @@ import classes from './CreateArticle.module.scss';
 
 export function CreateArticle() {
   const {
+    clearErrors,
+    addTags,
+    deleteTags,
+    createArticle,
+    updateArticle,
+    tagValueChange,
+    fetchArticleBySlug,
+    clearOpenedItem,
+  } = useActions();
+  const errorContainer = useRef();
+  const addTag = useRef();
+
+  const error = useSelector((state) => state.accountReducer.errors);
+  const tagsList = useSelector((state) => state.articleReducer.postArticle.tags);
+  const item = useSelector((state) => state.articleReducer.getArticle.openedItem);
+
+  let navigate = useNavigate();
+  const { id } = useParams();
+  const location = useLocation();
+  // console.log(location);
+  const isEditingOrCreating = location.pathname.includes('edit') ? 'edit' : 'create';
+
+  useEffect(() => {
+    if (isEditingOrCreating === 'create') clearOpenedItem();
+  }, [isEditingOrCreating]);
+
+  useEffect(() => {
+    if (id && isEditingOrCreating === 'edit') fetchArticleBySlug(id);
+  }, [id]);
+
+  useEffect(() => {
+    if (item.tagList) {
+      const newTagsObj = [];
+      item.tagList.forEach((tag, i) => {
+        newTagsObj.push({ inputId: i, inputValue: tag });
+      });
+      addTags(newTagsObj);
+    }
+  }, [item.tagList]);
+
+  const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm({ mode: 'onSubmit' });
-
-  const [inputId, setInputId] = useState(1);
-
-  const errorContainer = useRef();
-  const addTag = useRef();
-  const { clearErrors, addTags, deleteTags } = useActions();
-
-  const error = useSelector((state) => state.accountReducer.errors);
-  const tagsList = useSelector((state) => state.articleReducer.postArticle.tags);
+  } = useForm({ mode: 'onSubmit', defaultValues: item ? item : {} });
 
   if (error && Object.keys(error).length && errorContainer.current)
     errorContainer.current.classList.remove(`${classes['create-article__error-container--hidden']}`);
@@ -33,10 +65,29 @@ export function CreateArticle() {
   if (tagsList.length && addTag.current) addTag.current.classList.add(`${classes['create-article__add-tag--hidden']}`);
   else if (addTag.current) addTag.current.classList.remove(`${classes['create-article__add-tag--hidden']}`);
 
-  const onSubmit = (e, data) => {
-    e.preventDefault();
-    console.log(data);
+  const onSubmit = (data) => {
+    const token = localStorage.getItem('token');
+
+    if (!Object.keys(item).length) {
+      const tags = [];
+      for (const item in data) {
+        if (item.includes('tag')) {
+          tags.push(data[`${item}`]);
+          delete data[`${item}`];
+        }
+      }
+      const resData = { article: { ...data, tagList: tags, token } };
+      createArticle(resData);
+    } else {
+      const tags = [];
+      tagsList.forEach((tag) => {
+        tags.push(tag.inputValue);
+      });
+      const resData = { article: { ...data, tagList: tags, token } };
+      updateArticle(resData);
+    }
     reset();
+    if (error && !Object.keys(error).length) return navigate('/');
   };
 
   const onClick = () => {
@@ -44,77 +95,94 @@ export function CreateArticle() {
     clearErrors();
   };
 
-  const addNewTag = (e) => {
-    console.log('add');
+  const addNewTag = (e, id) => {
     e.preventDefault();
-    addTags(inputId);
-    setInputId(inputId + 1);
+    addTags(id);
+    // setInputId(inputId + 1);
   };
 
-  const deleteTag = (e, tag) => {
-    console.log('delete');
+  const deleteTag = (e, id) => {
     e.preventDefault();
-    deleteTags(tag.inputId);
+    deleteTags(id);
   };
 
-  const buttonAddTag = (
-    <button className={classes['create-article__add-tag']} onClick={addNewTag}>
-      Add tag
-    </button>
-  );
+  const onChange = (e, id) => {
+    tagValueChange({ id, value: e.target.value });
+  };
 
   return (
     <div className={classes['create-article']}>
-      <h1 className={classes['create-article__title']}>Create new article</h1>
+      <h1 className={classes['create-article__title']}>
+        {isEditingOrCreating === 'edit' ? 'Edit article' : 'Create new article'}
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={classes['create-article__list']}>
-          {itemCreator(
-            'Title',
-            register(Object.keys(titleRegister)[0], titleRegister.title),
-            'title',
+          {itemCreator({
+            headText: 'Title',
+            register: register('title', titleRegister.title),
+            errorsKey: 'title',
             errors,
-            'create-article',
-          )}
-          {itemCreator(
-            'Short description',
-            register(Object.keys(descriptionRegister)[0], descriptionRegister.description),
-            'description',
+            classN: 'create-article',
+            defaultValue: item.title,
+          })}
+          {itemCreator({
+            headText: 'Short description',
+            register: register('description', descriptionRegister.description),
+            errorsKey: 'description',
             errors,
-            'create-article',
-            'Description',
-          )}
-          {itemCreator(
-            'Text',
-            register(Object.keys(textRegister)[0], textRegister.text),
-            'text',
+            classN: 'create-article',
+            placeholder: 'Description',
+            defaultValue: item.description,
+          })}
+          {itemCreator({
+            headText: 'Text',
+            register: register('body', textRegister.body),
+            errorsKey: 'body',
             errors,
-            'create-article',
-            '',
-            'create-article__textarea',
-          )}
+            classN: 'create-article',
+            textareaClassN: 'create-article__textarea',
+            defaultValue: item.body,
+          })}
           <div className={classes['create-article__item']}>
             <h4 className={classes['create-article__head']}>Tags</h4>
             {tagsList.map((tag, i) => {
               return (
-                <div key={tag.inputId} className={classes['create-article__tag']}>
+                <div key={i} className={classes['create-article__tag']}>
                   <input
                     type="text"
                     placeholder={'Tag'}
                     className={`${classes['create-article__input-name']} ${classes['create-article__input-name--tag']}`}
-                    {...register('tag', {
-                      required: false,
-                    })}
-                    onSubmit={(e) => e.stopPropagation()}
+                    defaultValue={typeof tag === 'object' ? tag.inputValue : tag}
+                    maxLength={20}
+                    {...register(`tag-${i}`, { require: false })}
+                    onChange={(e) => onChange(e, i)}
                   />
 
-                  <button className={classes['create-article__delete-tag']} onClick={(e) => deleteTag(e, tag)}>
+                  <button
+                    type="button"
+                    className={classes['create-article__delete-tag']}
+                    onClick={(e) => deleteTag(e, i)}
+                  >
                     Delete
                   </button>
-                  {i + 1 === tagsList.length ? buttonAddTag : null}
+                  {i + 1 === tagsList.length ? (
+                    <button
+                      className={classes['create-article__add-tag']}
+                      onClick={(e) => addNewTag(e, i + 1)}
+                      type="button"
+                    >
+                      Add tag
+                    </button>
+                  ) : null}
                 </div>
               );
             })}
-            <button className={classes['create-article__add-tag']} onClick={addNewTag} ref={addTag}>
+            <button
+              className={classes['create-article__add-tag']}
+              onClick={(e) => addNewTag(e, 0)}
+              ref={addTag}
+              type="button"
+            >
               Create tags
             </button>
           </div>

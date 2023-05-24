@@ -8,7 +8,10 @@ import {
   fetchGetLoginPerson,
   fetchEditProfile,
   fetchArticleBySlug,
+  createArticle,
+  updateArticle,
   fetchArticles,
+  deleteArticle,
 } from '../store/slices/helpersActions/helpersActions';
 import { actions as accountActions } from '../store/slices/accountSlice';
 import { actions as articleActions } from '../store/slices/articleSlice';
@@ -22,6 +25,9 @@ const rootAction = {
   fetchArticleBySlug,
   fetchArticles,
   fetchEditProfile,
+  createArticle,
+  updateArticle,
+  deleteArticle,
 };
 
 export const useActions = () => {

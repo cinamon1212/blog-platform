@@ -43,20 +43,20 @@ export function SignIn() {
       <h1 className={classes['sign-in__title']}>Sign In</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={classes['sign-in__list']}>
-          {itemCreator(
-            'Email address',
-            register(Object.keys(emailRegister)[0], emailRegister.email),
-            'email',
+          {itemCreator({
+            headText: 'Email address',
+            register: register('email', emailRegister.email),
+            errorsKey: 'email',
             errors,
-            'sign-in',
-          )}
-          {itemCreator(
-            'Password',
-            register(Object.keys(passwordRegister)[0], passwordRegister.password),
-            'password',
+            classN: 'sign-in',
+          })}
+          {itemCreator({
+            headText: 'Password',
+            register: register('password', passwordRegister.password),
+            errorsKey: 'password',
             errors,
-            'sign-in',
-          )}
+            classN: 'sign-in',
+          })}
         </div>
 
         <input type="submit" className={classes['sign-in__input-submit']} value="Login" />

@@ -10,6 +10,7 @@
     padding-bottom: 25px;
     margin-bottom: 26px;
     border-radius: 5px;
+    gap: 10px;
 
     &:last-child {
       margin-bottom: 0;
@@ -17,7 +18,7 @@
   }
 
   &__item-description {
-    width: 80%;
+    max-width: 80%;
   }
 
   &__item-header {
@@ -34,6 +35,13 @@
     font-weight: 500;
     margin: 0;
     padding: 0;
+  }
+
+  &__buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
   }
 
   &__item-icon {
@@ -72,12 +80,49 @@
     color: rgba(0, 0, 0, 0.75);
   }
 
+  &__delete-tag {
+    width: 80px;
+    height: 30px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    box-sizing: border-box;
+    background-color: white;
+    cursor: pointer;
+    border: 1px solid #f5222d;
+    border-radius: 4px;
+    color: #f5222d;
+
+    &--hidden {
+      display: none;
+    }
+  }
+
+  &__create-article {
+    font-size: 14px;
+    line-height: 22px;
+    vertical-align: middle;
+    width: 80px;
+    height: 30px;
+    box-sizing: border-box;
+    background-color: white;
+    border: 1px solid #52c41a;
+    border-radius: 5px;
+    color: #52c41a;
+    cursor: pointer;
+
+    &--hidden {
+      display: none;
+    }
+  }
+
   &__item-tags {
     display: flex;
     gap: 5px;
     font-weight: 400;
     font-size: 12px;
     line-height: 15px;
+    flex-wrap: wrap;
   }
 
   &__item-tag {
@@ -90,8 +135,7 @@
   &__item-preview {
     display: flex;
     align-items: center;
-    gap: 10px;
-    align-self: flex-start;
+    flex-direction: column;
   }
 
   &__item-name {
@@ -112,6 +156,6 @@
   &__item-person {
     display: flex;
     align-items: center;
-    flex-direction: column;
+    gap: 10px;
   }
 }

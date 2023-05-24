@@ -84,3 +84,50 @@ export const fetchGetLoginPerson = createAsyncThunk('account/fetchGetLoginPerson
     return res;
   } else return Promise.reject(new Error(response.statusText));
 });
+
+export const createArticle = createAsyncThunk('articles/createArticle', async function (article) {
+  const response = await fetch('https://blog.kata.academy/api/articles', {
+    method: 'POST',
+    headers: {
+      Authorization: `Token ${article.article.token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(article),
+  });
+
+  if (response.ok) {
+    const res = await response.json();
+    return res;
+  } else return Promise.reject(new Error(response.statusText));
+});
+
+export const updateArticle = createAsyncThunk('articles/updateArticle', async function (article) {
+  const response = await fetch(`https://blog.kata.academy/api/articles/${article.article.slug}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Token ${article.article.token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(article),
+  });
+
+  if (response.ok) {
+    const res = await response.json();
+    return res;
+  } else return Promise.reject(new Error(response.statusText));
+});
+
+export const deleteArticle = createAsyncThunk('articles/deleteArticle', async function ({ slug, token }) {
+  const response = await fetch(`https://blog.kata.academy/api/articles/${slug}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.ok) {
+    const res = await response.json();
+    return res;
+  } else return Promise.reject(new Error(response.statusText));
+});

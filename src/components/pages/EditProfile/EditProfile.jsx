@@ -16,19 +16,13 @@ import classes from './EditProfile.module.scss';
 
 export function EditProfile() {
   const errorContainer = useRef();
-  const { clearErrors } = useActions();
+  const { clearErrors, fetchEditProfile } = useActions();
+  const navigate = useNavigate();
   const newPerson = useSelector((state) => state.accountReducer.personData);
   const error = useSelector((state) => state.accountReducer.errors);
   const token = localStorage.getItem('token');
+
   const defaultForm = newPerson.user ? (Object.keys(newPerson.user).length ? newPerson.user : {}) : {};
-
-  if (error && Object.keys(error).length && errorContainer.current)
-    errorContainer.current.classList.remove(`${classes['edit-profile__error-container--hidden']}`);
-
-  const onClick = () => {
-    errorContainer.current.classList.add(`${classes['edit-profile__error-container--hidden']}`);
-    clearErrors();
-  };
 
   const {
     register,
@@ -40,51 +34,54 @@ export function EditProfile() {
     defaultValues: defaultForm,
   });
 
-  const { fetchEditProfile } = useActions();
+  if (error && Object.keys(error).length && errorContainer.current)
+    errorContainer.current.classList.remove(`${classes['edit-profile__error-container--hidden']}`);
+
+  const onClick = () => {
+    errorContainer.current.classList.add(`${classes['edit-profile__error-container--hidden']}`);
+    clearErrors();
+  };
 
   const onSubmit = (data) => {
     const user = { user: { ...data, token } };
-    console.log(user);
     fetchEditProfile(user);
     reset();
     if (error && !Object.keys(error).length) return navigate('/');
   };
-
-  let navigate = useNavigate();
 
   return (
     <div className={classes['edit-profile']}>
       <h1 className={classes['edit-profile__title']}>Edit Profile</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={classes['edit-profile__list']}>
-          {itemCreator(
-            'Username',
-            register(Object.keys(usernameRegister)[0], usernameRegister.username),
-            'username',
+          {itemCreator({
+            headText: 'Username',
+            register: register('username', usernameRegister.username),
+            errorsKey: 'username',
             errors,
-            'edit-profile',
-          )}
-          {itemCreator(
-            'Email address',
-            register(Object.keys(emailRegister)[0], emailRegister.email),
-            'email',
+            classN: 'edit-profile',
+          })}
+          {itemCreator({
+            headText: 'Email address',
+            register: register('email', emailRegister.email),
+            errorsKey: 'email',
             errors,
-            'edit-profile',
-          )}
-          {itemCreator(
-            'New Password',
-            register(Object.keys(passwordRegister)[0], passwordRegister.password),
-            'password',
+            classN: 'edit-profile',
+          })}
+          {itemCreator({
+            headText: 'New Password',
+            register: register('password', passwordRegister.password),
+            errorsKey: 'password',
             errors,
-            'edit-profile',
-          )}
-          {itemCreator(
-            'Avatar image (url)',
-            register(Object.keys(avatarRegister)[0], avatarRegister.image),
-            'image',
+            classN: 'edit-profile',
+          })}
+          {itemCreator({
+            headText: 'Avatar image (url)',
+            register: register('image', avatarRegister.image),
+            errorsKey: 'image',
             errors,
-            'edit-profile',
-          )}
+            classN: 'edit-profile',
+          })}
         </div>
 
         <input type="submit" className={classes['edit-profile__input-submit']} value="Save" />

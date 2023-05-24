@@ -1,11 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { format } from 'date-fns';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
 import { useActions } from '../../../hooks/useAction';
-// import { fetchArticleBySlug } from '../../store/slices/articleSlice';
 
 import classes from './ItemList.module.scss';
 
@@ -32,11 +31,19 @@ const getElementProps = (
 };
 
 export function ItemList(props) {
-  // const dispatch = useDispatch();
-
-  const { fetchArticleBySlug } = useActions();
-
+  const { fetchArticleBySlug, deleteArticle } = useActions();
   const item = useSelector((state) => state.articleReducer.getArticle.openedItem);
+  const newPerson = useSelector((state) => state.accountReducer.personData);
+  // const error = useSelector((state) => state.articleReducer.errors);
+
+  const { id } = useParams();
+  let navigate = useNavigate();
+  const deleteButton = useRef();
+  const editButton = useRef();
+
+  useEffect(() => {
+    if (id) fetchArticleBySlug(id);
+  }, [id]);
 
   const { createdAt, slug, title, favoritesCount, tagList, description, author, month, day, year, body } = Object.keys(
     props,
@@ -44,11 +51,20 @@ export function ItemList(props) {
     ? { ...getElementProps(props, false) }
     : { ...getElementProps(item, true) };
 
-  const { id } = useParams();
+  if (newPerson && item && Object.keys(newPerson).length && Object.keys(item).length) {
+    if (newPerson.user.username === item.author.username && deleteButton.current && editButton.current) {
+      deleteButton.current.classList.remove(`${classes['list__delete-tag--hidden']}`);
+      editButton.current.classList.remove(`${classes['list__create-article--hidden']}`);
+    } else if (deleteButton.current && editButton.current) {
+      deleteButton.current.classList.add(`${classes['list__delete-tag--hidden']}`);
+      editButton.current.classList.add(`${classes['list__create-article--hidden']}`);
+    }
+  }
 
-  useEffect(() => {
-    if (id) fetchArticleBySlug(id);
-  }, [id]);
+  const deleteArticles = () => {
+    deleteArticle({ slug: item.slug, token: localStorage.getItem('token') });
+    return navigate('/');
+  };
 
   return (
     <li className={classes.list__item}>
@@ -79,11 +95,33 @@ export function ItemList(props) {
       </div>
       <div className={classes['list__item-preview']}>
         <div className={classes['list__item-person']}>
-          <h3 className={classes['list__item-name']}>{author ? author.username : null}</h3>
-          <span className={classes['list__item-data']}>{createdAt ? `${month} ${day}, ${year}` : null} </span>
+          <div>
+            <h3 className={classes['list__item-name']}>{author ? author.username : null}</h3>
+            <span className={classes['list__item-data']}>{createdAt ? `${month} ${day}, ${year}` : null} </span>
+          </div>
+          <img src={author ? author.image : null} alt="person-icon" className={classes['list__item-people']} />
         </div>
+
+        <div className={classes['list__buttons-container']}>
+          <button
+            type="button"
+            className={`${classes['list__delete-tag']} ${classes['list__delete-tag--hidden']}`}
+            ref={deleteButton}
+            onClick={deleteArticles}
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            className={`${classes['list__create-article']} ${classes['list__create-article--hidden']}`}
+            onClick={() => navigate(`/articles/${item.slug}/edit`)}
+            ref={editButton}
+          >
+            Edit
+          </button>
+        </div>
+
         {/* <div className={classes['list__item-people']}></div> */}
-        <img src={author ? author.image : null} alt="person-icon" className={classes['list__item-people']} />
       </div>
     </li>
   );

@@ -1,12 +1,22 @@
 import classes from './helpers.module.scss';
 
-export const itemCreator = (headText, register, errorsKey, errors, classN, placeholder, textareaClassN) => {
+export const itemCreator = ({
+  headText,
+  register,
+  errorsKey,
+  errors,
+  classN,
+  placeholder,
+  textareaClassN,
+  defaultValue,
+}) => {
   const textarea = textareaClassN ? (
     <textarea
       type={'text'}
       className={classes[`${textareaClassN}`]}
       placeholder={placeholder ? placeholder : headText}
       {...register}
+      defaultValue={defaultValue ? defaultValue : null}
     ></textarea>
   ) : null;
 
@@ -21,6 +31,7 @@ export const itemCreator = (headText, register, errorsKey, errors, classN, place
           {...register}
           placeholder={placeholder ? placeholder : headText}
           className={classes[`${classN}__input-name`]}
+          defaultValue={defaultValue ? defaultValue : null}
         />
       )}
 
@@ -84,7 +95,7 @@ export const descriptionRegister = {
 };
 
 export const textRegister = {
-  text: {
+  body: {
     required: 'Text is required field',
     setValueAs: (v) => v.trim(),
     minLength: {

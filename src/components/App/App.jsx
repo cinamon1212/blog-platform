@@ -20,6 +20,7 @@ export function App() {
         <Route path={'sign-up'} element={<SignUp />}></Route>
         <Route path={'sign-in'} element={<SignIn />} />
         <Route path={'new-article'} element={<CreateArticle />} />
+        <Route path={'articles/:id/edit'} element={<CreateArticle />} />
         <Route path={'profile'} element={<EditProfile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

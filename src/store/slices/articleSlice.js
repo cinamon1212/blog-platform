@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { fetchArticleBySlug, fetchArticles } from './helpersActions/helpersActions';
+import {
+  fetchArticleBySlug,
+  fetchArticles,
+  createArticle,
+  updateArticle,
+  deleteArticle,
+} from './helpersActions/helpersActions';
 
 const articleSlice = createSlice({
   name: 'articles',
@@ -18,13 +24,21 @@ const articleSlice = createSlice({
     postArticle: {
       tags: [],
     },
+    errors: [],
   },
   reducers: {
     addTags: (state, action) => {
-      state.postArticle.tags.push({ inputId: action.payload, inputValue: '' });
+      if (typeof action.payload === 'object') state.postArticle.tags = action.payload;
+      else state.postArticle.tags.push({ inputId: action.payload, inputValue: '' });
     },
     deleteTags: (state, action) => {
       state.postArticle.tags = state.postArticle.tags.filter((tag) => tag.inputId !== action.payload);
+    },
+    tagValueChange: (state, action) => {
+      state.postArticle.tags[action.payload.id].inputValue = action.payload.value;
+    },
+    clearOpenedItem: (state) => {
+      state.getArticle.openedItem = {};
     },
   },
   extraReducers: (builder) => {
@@ -49,6 +63,18 @@ const articleSlice = createSlice({
 
     builder.addCase(fetchArticleBySlug.rejected, (action) => {
       console.log(`FetchArticleBySlug - rejected action: ${action}`);
+    });
+
+    builder.addCase(createArticle.rejected, (state, action) => {
+      state.errors = { ...action.error };
+    });
+
+    builder.addCase(updateArticle.rejected, (state, action) => {
+      state.errors = { ...action.error };
+    });
+
+    builder.addCase(deleteArticle.rejected, (state, action) => {
+      state.errors = { ...action.error };
     });
   },
 });

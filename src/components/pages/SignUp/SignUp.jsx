@@ -47,27 +47,27 @@ export function SignUp() {
         <h1 className={classes['sign-up__title']}>Create new account</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={classes['sign-up__list']}>
-            {itemCreator(
-              'Username',
-              register(Object.keys(usernameRegister)[0], usernameRegister.username),
-              'username',
+            {itemCreator({
+              headText: 'Username',
+              register: register('username', usernameRegister.username),
+              errorsKey: 'username',
               errors,
-              'sign-up',
-            )}
-            {itemCreator(
-              'Email address',
-              register(Object.keys(emailRegister)[0], emailRegister.email),
-              'email',
+              classN: 'sign-up',
+            })}
+            {itemCreator({
+              headText: 'Email address',
+              register: register('email', emailRegister.email),
+              errorsKey: 'email',
               errors,
-              'sign-up',
-            )}
-            {itemCreator(
-              'Password',
-              register(Object.keys(passwordRegister)[0], passwordRegister.password),
-              'password',
+              classN: 'sign-up',
+            })}
+            {itemCreator({
+              headText: 'Password',
+              register: register('password', passwordRegister.password),
+              errorsKey: 'password',
               errors,
-              'sign-up',
-            )}
+              classN: 'sign-up',
+            })}
             <div className={classes['sign-up__item']}>
               <h4 className={classes['sign-up__head']}>Repeat Password</h4>
               <input
