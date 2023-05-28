@@ -23,7 +23,7 @@ export function List() {
 
    useEffect(() => {
       fetchArticles(page);
-   }, []);
+   }, [page]);
 
    const content = loading ? (
       <Loader />

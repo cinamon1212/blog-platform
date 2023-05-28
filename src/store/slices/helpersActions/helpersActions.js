@@ -146,9 +146,9 @@ export const deleteArticle = createAsyncThunk(
             'Content-Type': 'application/json',
          },
       });
-
+      console.log(response);
       if (response.ok) return await response.json();
-      else rejectWithValue(new Error(response.statusText));
+      else rejectWithValue('Error delete');
    },
 );
 
