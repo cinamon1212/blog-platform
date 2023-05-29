@@ -31,7 +31,6 @@ const accountSlice = createSlice({
       });
 
       builder.addCase(fetchEditProfile.fulfilled, (state, action) => {
-         console.log(state.personData.user.username);
          const liked = JSON.parse(localStorage.getItem('liked'));
          if (liked.length)
             liked.forEach((element) => {

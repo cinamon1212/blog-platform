@@ -15,8 +15,8 @@ export function SignUp() {
       handleSubmit,
       reset,
       getValues,
-   } = useForm({ mode: 'onSubmit' });
-   const [error, setError] = useState(false);
+   } = useForm({ mode: 'onBlur' });
+   const [error, setError] = useState('');
 
    const errorContainer = useRef();
    const { fetchRegister, fetchLogin } = useActions();
@@ -34,12 +34,15 @@ export function SignUp() {
          user: { username: data.username, email: data.email, password: data.password },
       });
       fetchRegister(resData).then((result) => {
-         console.log(result.payload);
-         if (typeof result.payload === 'string') setError(true);
-         else {
+         if (result.payload.errors) {
+            const err = result.payload.errors;
+            setError(`${Object.keys(err)[0]} ${Object.values(err)[0]}`);
+         } else {
             fetchLogin(resData).then((res) => {
-               if (typeof res.payload === 'string') setError(true);
-               return navigate('/');
+               if (res.payload.errors) {
+                  const err = res.payload.errors;
+                  setError(`${Object.keys(err)[0]} ${Object.values(err)[0]}`);
+               } else return navigate('/');
             });
          }
          reset();
@@ -132,7 +135,7 @@ export function SignUp() {
             <button className={classes['sign-up__error-button']} onClick={onClick}>
                ✖
             </button>
-            Something went wrong... Try to sign up again
+            Error - {error}
          </div>
       </div>
    );

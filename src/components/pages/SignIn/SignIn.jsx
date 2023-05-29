@@ -14,18 +14,20 @@ export function SignIn() {
       formState: { errors },
       handleSubmit,
       reset,
-   } = useForm({ mode: 'onSubmit' });
+   } = useForm({ mode: 'onBlur' });
    const { fetchLogin } = useActions();
 
-   const [error, setError] = useState(false);
+   const [error, setError] = useState('');
    const errorContainer = useRef();
    const navigate = useNavigate();
 
    const onSubmit = (data) => {
       const user = JSON.stringify({ user: { ...data } });
       fetchLogin(user).then((result) => {
-         if (typeof result.payload === 'string') setError(true);
-         else return navigate('/');
+         if (result.payload.errors) {
+            const err = result.payload.errors;
+            setError(`${Object.keys(err)[0]} ${Object.values(err)[0]}`);
+         } else return navigate('/');
          reset();
       });
    };
@@ -78,7 +80,7 @@ export function SignIn() {
             <button className={classes['sign-in__error-button']} onClick={onClick}>
                ✖
             </button>
-            Something went wrong... Try to login again
+            Error - {error}
          </div>
       </div>
    );

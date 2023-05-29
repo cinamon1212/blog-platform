@@ -10,7 +10,7 @@ import classes from './CreateArticle.module.scss';
 
 export function CreateArticle() {
    const { addTags, deleteTags, createArticle, updateArticle, tagValueChange, fetchArticleBySlug } = useActions();
-   const [error, setError] = useState(false);
+   const [error, setError] = useState('');
    const errorContainer = useRef();
    const addTag = useRef();
 
@@ -42,7 +42,7 @@ export function CreateArticle() {
       register,
       formState: { errors },
       handleSubmit,
-   } = useForm({ mode: 'onSubmit', defaultValues: isEditingOrCreating === 'edit' ? item : {} });
+   } = useForm({ mode: 'onBlur', defaultValues: isEditingOrCreating === 'edit' ? item : {} });
 
    if (error && errorContainer.current)
       errorContainer.current.classList.remove(`${classes['create-article__error-container--hidden']}`);

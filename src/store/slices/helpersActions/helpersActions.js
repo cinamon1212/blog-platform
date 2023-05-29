@@ -17,25 +17,19 @@ export const fetchArticleBySlug = createAsyncThunk(
    },
 );
 
-export const fetchRegister = createAsyncThunk(
-   'account/fetchPostPersonData',
-   async function (user, { rejectWithValue }) {
-      const response = await fetch('https://blog.kata.academy/api/users', {
-         method: 'POST',
-         headers: {
-            'Content-Type': 'application/json',
-         },
-         body: user,
-      });
+export const fetchRegister = createAsyncThunk('account/fetchPostPersonData', async function (user) {
+   const response = await fetch('https://blog.kata.academy/api/users', {
+      method: 'POST',
+      headers: {
+         'Content-Type': 'application/json',
+      },
+      body: user,
+   });
 
-      if (response.ok) {
-         return loginCallback(user);
-      } else
-         return rejectWithValue(
-            `Could not fetch https://blog.kata.academy/api/users, response status: ${response.status}`,
-         );
-   },
-);
+   if (response.ok) {
+      return loginCallback(user);
+   } else return await response.json();
+});
 
 const loginCallback = async (user) => {
    const response = await fetch('https://blog.kata.academy/api/users/login', {
@@ -46,41 +40,34 @@ const loginCallback = async (user) => {
       body: user,
    });
 
+   const res = await response.json();
    if (response.ok) {
-      const res = await response.json();
-
       if (localStorage.getItem('token')) localStorage.removeItem('token');
       localStorage.setItem('token', res.user.token);
-      return res;
-   } else return `Could not fetch https://blog.kata.academy/api/users/login, response status: ${response.status}`;
+   }
+   return res;
 };
 
 export const fetchLogin = createAsyncThunk('account/fetchLogin', loginCallback);
 
-export const fetchEditProfile = createAsyncThunk(
-   'account/fetchEditProfile',
-   async function (user, { rejectWithValue }) {
-      const response = await fetch('https://blog.kata.academy/api/user', {
-         method: 'PUT',
-         headers: {
-            Authorization: `Token ${user.user.token}`,
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(user),
-      });
+export const fetchEditProfile = createAsyncThunk('account/fetchEditProfile', async function (user) {
+   const response = await fetch('https://blog.kata.academy/api/user', {
+      method: 'PUT',
+      headers: {
+         Authorization: `Token ${user.user.token}`,
+         'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+   });
 
-      if (response.ok) {
-         const res = await response.json();
+   const res = await response.json();
 
-         if (localStorage.getItem('token')) localStorage.removeItem('token');
-         localStorage.setItem('token', res.user.token);
-         return res;
-      } else
-         return rejectWithValue(
-            `Could not fetch https://blog.kata.academy/api/users, response status: ${response.status}`,
-         );
-   },
-);
+   if (response.ok) {
+      if (localStorage.getItem('token')) localStorage.removeItem('token');
+      localStorage.setItem('token', res.user.token);
+   }
+   return res;
+});
 
 export const fetchGetLoginPerson = createAsyncThunk(
    'account/fetchGetLoginPerson',

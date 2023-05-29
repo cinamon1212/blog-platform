@@ -15,7 +15,7 @@ import { useActions } from '../../../hooks/useAction';
 import classes from './EditProfile.module.scss';
 
 export function EditProfile() {
-   const [error, setError] = useState(false);
+   const [error, setError] = useState('');
    const errorContainer = useRef();
    const { clearErrors, fetchEditProfile } = useActions();
    const navigate = useNavigate();
@@ -31,7 +31,7 @@ export function EditProfile() {
       handleSubmit,
       reset,
    } = useForm({
-      mode: 'onSubmit',
+      mode: 'onBlur',
       defaultValues: defaultForm,
    });
 
@@ -46,9 +46,10 @@ export function EditProfile() {
    const onSubmit = (data) => {
       const user = { user: { ...data, token } };
       fetchEditProfile(user).then((result) => {
-         console.log(result.payload);
-         if (typeof result.payload === 'string') setError(true);
-         else return navigate('/');
+         if (result.payload.errors) {
+            const err = result.payload.errors;
+            setError(`${Object.keys(err)[0]} ${Object.values(err)[0]}`);
+         } else return navigate('/');
          reset();
       });
    };
